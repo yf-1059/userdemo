@@ -1,0 +1,23 @@
+<div class="row my-5">
+  <table class="table">
+    <thead class="thead-light" style="height: 50px; vertical-align: middle">
+      <tr class="border">
+        <th scope="col" class="bg-warning">#</th>
+        <th scope="col" class="bg-warning">Name</th>
+        <th scope="col" class="bg-warning">Email</th>
+        <th scope="col" class="bg-warning" style="text-align: center">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of users" style="vertical-align: middle" class="border">
+        <td>{{ user.id }}</td>
+        <td>{{ user.name }}</td>
+        <td>{{ user.email }}</td>
+        <td style="text-align: center">
+          <button class="btn btn-primary mx-3 my-1" type="button" (click)="onEdit(user)">Edit</button>
+          <button class="btn btn-danger my-1" type="button" (click)="onDelete(user)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

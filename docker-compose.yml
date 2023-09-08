@@ -1,0 +1,47 @@
+# Docker Compose file Reference (https://docs.docker.com/compose/compose-file/)
+version: '3'
+
+#Define services
+services:
+
+  #PostgreSQL Database for the application
+  db:
+    image: "postgres:10"
+    container_name: demo-postgres
+    #Volume mounted for database for the storage
+    volumes:
+      - demo-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432 # Forward the exposed port 5432 on the container to port 5432 on the host machine
+
+    #Environment variable for DB name, user and password
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+  #Back-end Spring Boot Application
+  backend:
+    #The docker file in backend build the jar and provides the docker image with the following name.
+    build: ./backend
+    container_name: demo-backend
+
+    #Environment variables for Spring Boot Application.
+    environment:
+      - DB_SERVER=demo-postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - 8080:8080 # Forward the exposed port 8080 on the container to port 8080 on the host machine
+
+  #Fron-end Angular Application
+  frontend:
+    build: ./frontend
+    container_name: demo-frontend
+    ports:
+      - 4200:4200
+
+#Volumes for DB data
+volumes:
+  demo-data:
