@@ -18,6 +18,7 @@
           id="email" 
           name="email" 
           placeholder="Enter your email address"
+          email="true"
           required #email="ngModel">
       </div>
       <div [hidden]="!email.pristine" class="alert alert-danger">Email is required</div>
