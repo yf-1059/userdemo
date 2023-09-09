@@ -5,9 +5,9 @@ version: '3'
 services:
 
   #PostgreSQL Database for the application
-  db:
+  demo-db:
     image: "postgres:10"
-    container_name: demo-postgres
+    container_name: demo-db
     #Volume mounted for database for the storage
     volumes:
       - demo-data:/var/lib/postgresql/data
@@ -20,27 +20,38 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
 
+    healthcheck :
+      test: [ "CMD", "pg_isready", "-q", "-d", "postgres", "-U", "postgres" ]
+      interval : 5s
+      timeout : 5s
+      retries : 5
+
   #Back-end Spring Boot Application
-  backend:
+  demo-backend:
     #The docker file in backend build the jar and provides the docker image with the following name.
     build: ./backend
     container_name: demo-backend
 
     #Environment variables for Spring Boot Application.
     environment:
-      - DB_SERVER=demo-postgres
+      - DB_SERVER=demo-db
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     ports:
       - 8080:8080 # Forward the exposed port 8080 on the container to port 8080 on the host machine
+    depends_on :
+      demo-db:
+        condition: service_healthy
 
-  #Fron-end Angular Application
-  frontend:
+  #Front-end Angular Application
+  demo-frontend:
     build: ./frontend
     container_name: demo-frontend
     ports:
-      - 4200:4200
+      - 4200:80
+    depends_on:
+      - demo-backend
 
 #Volumes for DB data
 volumes:
